@@ -10,7 +10,7 @@ This repository consists of two types of data. Firstly, it includes CSV files, w
 Secondly, it contains rosbag containing the following variables: occupancy map, UAV pose, belief state of UAV position, belief state of Target position, and the YOLOv5 detection output. The YOLOv5 output does not contain the images but the actual detection output with the detected object's classe and bounding box coordinate. 
 The data is first seperated by simulation and real-life testing, and then by map and visibility condition, as highlited below. 
 
-**(1) Real-Life Testing **
+**Real-Life Testing **
 
 3.5 ON: map containing only 3.5 meters obstacles in normal visibility condition (lights ON).
 
