@@ -1,84 +1,69 @@
-# Documentation of "The playlist ecosystem at Spotify"
+# Documentation of "Experimental Data from Framework for Autonomous UAV Navigation and Target Detection in GPS-Denied and Visually Degraded Environments"
 
-This is a repository which hosts the source code to prepare the public version of the data set:
+This is a repository which hosts the data collected during the below mentionned research paper:
 
-Datta, Hannes, 2020, "The playlist ecosystem at Spotify", https://doi.org/10.34894/4UBBAW, DataverseNL.
-
-If you are...
-- a (potential) user of the data, you can [download the data](https://doi.org/10.34894/4UBBAW), or view its detailed [documentation here](doc/). 
-- part of the maintenance team, you can use this repository to update the dataset or its documentation.
-- interested in creating your own reproducible workflows for anonymizing and sharing data with the public, you can use this repository as a template.
-
-<!-- remove if necessary-->
-__Note:__ The data set is not released to the public yet (expected mid of 2021). For questions, get in touch via email, please.
-<!-- -->
+Boiteau, Sebastien and Vanegas, Fernando and Gonzalez, Felipe, 2023, "Framework for Autonomous UAV Navigation and Target Detection in GPS-Denied and Visually Degraded Environments", ADD DOI.
 
 ## Overview about the data
 
-This repository consists of two main data collections, administered via the Chartmetric API:
+This repository consists of two types of data. Firstly, it includes CSV files, which records several parameters such as the time step duration, UAV pose estimation, target position, actions....
+Secondly, it contains rosbag containing the following variables: occupancy map, UAV pose, belief state of UAV position, belief state of Target position, and the YOLOv5 detection output. The YOLOv5 output does not contain the images but the actual detection output with the detected object's classe and bounding box coordinate. 
+The data is first seperated by simulation and real-life testing, and then by map and visibility condition, as highlited below. 
 
-**(1) Database 1, retrieved in 2019-11**
+**(1) Real-Life Testing **
 
-1.1 List of 1.1m playlists on Spotify (+ associated metadata)
+3.5 ON: map containing only 3.5 meters obstacles in normal visibility condition (lights ON).
 
-1.2 Playlist placements (current and past tracks on a playlist) for the Top 50k playlists in terms of followers
+3.5 OFF: map containing only 3.5 meters obstacles in low visibility condition (lights OFF).
 
-1.3 Time-series data on a playlist's followers for the Top 10k playlists in the data.
+DIFF ON: map containing 1.7 meters and 3.5 meters obstacles in normal visibility condition (lights ON).
 
+DIFF OFF: map containing 1.7 meters and 3.5 meters in low visibility condition (lights OFF).
 
-**(2) Database 2, retrieved between 2020-04 and 2020-08**
-
-2.1 List of 1.2m playlists on Spotify (+ associated metadata)
-
-2.2 Playlist placements (current and past tracks on a playlist)
-
-Collected for (a) the Top 150k playlists in terms of followers, (b) a random selection of the remaining ("below top 150k") playlists, and (c) playlists identified to serve personalized and semi-personalized recommendations.
-
-2.3 Playlist followers
-
-The database also holds time-series data for a playlist's followers for the Top 150k playlists in the data, see 2.2 (a), and for the playlists identified to serve personalized and semi-personalized recommendations, see 2.2 (c).
-
-2.4 Playlists' and artists' listeners
-
-Information on a playlists' number of monthly listeners (vs. followers), and artists' monthly listeners for artists that appeared on any of the Top 150k playlists in the data, see 2.2 (a).
-
-2.5 Artist fan metrics
-
-Information on the number of followers on Instagram and Deezer for artists that appeared on any of the Top 150k playlists in the data, see 2.2 (a).
+Picture bag: A folder containing short rosbags showing yolov5 detection images with the thermal camera during flight tests and on the ground to compare mannequin heat signature and human heat signature.
 
 
-The data is stored in new-line separated JSON files, whereby each line holds a self-contains JSON object. Files are split into chunks of ~8GB if the total file sizes exceeds 8 GB.
+**Simulation**
+
+3_5_Obst_LV: map containing only 3.5 meters obstacles in low visibility condition (smoke).
+
+3_5_Obst_NV: map containing only 3.5 meters obstacles in normal visibility condition (no smoke).
+
+Diff_Obst_LV: map containing 1.7 meters and 3.5 meters obstacles in low visibility condition (smoke).
+
+Diff_Obst_NV: map containing 1.7 meters and 3.5 meters obstacles in normal visibility condition (no smoke).
 
 
-## Workflow for maintaining the data and its documentation
-
-### Setup
-
-- Obtain a valid API key from Dataverse ("API Token" in the main menu), paste the key in `credentials.txt`.
-- Install Java
-- Download the most recent version of the [Dataverse uploading tool](https://github.com/GlobalDataverseCommunityConsortium/dataverse-uploader/) (run `bash init.sh` on Mac, or paste the link contained in the file in your browser on Windows)
-
+The data is stored in csv files and rosbags.
 
 ### File and directory structure
 
 ```
-├── credentials.txt         <- stores API credentials
-├── doc                     <- put any documentation here
-│   └── readme-template.txt (start from this template)
-├── rawdata-confidential    <- folder with confidential data
-├── release                 <- folder with public releases
-└── src                     <- source code to transform confidential
-                               data for public release
+├── REAL LIFE TESTING                    
+    └── 3_5_OFF
+        └── csv
+        └── rosbag
+    └── 3_5_ON
+        └── csv
+        └── rosbag
+    └── DIFF_OFF
+        └── csv
+        └── rosbag
+    └── DIFF_ON
+        └── csv
+        └── rosbag
+    └── Pictures bag
+├── SIMULATION
+    └── 3_5_Obst_LV
+        └── csv
+        └── rosbag
+    └── 3_5_Obst_NV
+        └── csv
+        └── rosbag
+    └── Diff_Obst_LV
+        └── csv
+        └── rosbag
+    └── Diff_Obst_NV
+        └── csv
+      
 ```
-
-### Workflow
-
-* __Archive confidential raw data on Dataverse__: `push_raw.sh` pushes the raw data to Dataverse (done once, `bash push_raw.sh`; or paste code into your command prompt on Windows). Remember to __restrict access to the folder__, by editing the file/directory permissions directly on Dataverse.
-
-* __Add/change data preparation code__ (e.g., to anonymize data) in `src\`; run this code yourself to produce derivate datasets for the (to-be-made public) `release\` folder.
-
-* __Release public versions__ of the data to Dataverse: `release.sh` pushes (updates) to the documentation in `doc\`, or the prepared data set in `release\`.
-
-* Done? Publish your data set on Dataverse (via the web interface).
-
-Note: API keys used in the `.sh` scripts is deprecated.
